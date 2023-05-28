@@ -8,6 +8,6 @@ export function recordToStation(record: ValenbiciRecord): ValenbiciStation {
     free: record.fields.free,
     available: record.fields.available,
     open: record.fields.open === 'T',
-    position: record.geometry.coordinates,
+    position: [record.geometry.coordinates[1], record.geometry.coordinates[0]],
   };
 }

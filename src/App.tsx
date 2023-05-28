@@ -19,7 +19,6 @@ export function App() {
       <main
         css={{
           flexGrow: 1,
-          background: 'blue',
         }}
       >
         <Heatmap valenbici={valenbici} />
