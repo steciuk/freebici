@@ -5,10 +5,16 @@ const Navbar = () => {
     <nav
       css={{
         height: '3rem',
-        backgroundColor: 'green',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#3f51b5',
+        color: 'white',
+        fontSize: '1.5rem',
+        fontWeight: 500,
       }}
     >
-      Navbar
+      FreeBici
     </nav>
   );
 };
