@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/freebici"
+        "outputPath": "dist"
       },
       "configurations": {
         "development": {

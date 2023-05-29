@@ -1,6 +1,8 @@
 import 'leaflet/dist/leaflet.css';
 
-import React, { useMemo, useState } from 'react';
+import { Icon } from 'leaflet';
+import markerIconPng from 'leaflet/dist/images/marker-icon.png';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
 import { VALENBICI_VORONOI } from 'src/apis/valenbici/voronoi/voronoi';
 import useToggle from 'src/hooks/util/useToggle';
@@ -12,13 +14,16 @@ import { Button, FormControlLabel, Slider, Switch } from '@mui/material';
 
 const Heatmap = (props: { valenbici: UseValenbiciResponse }) => {
   const center: [number, number] = [39.474809, -0.376574];
-  const [stations, _error, _loading] = props.valenbici;
+  const [stations, _error, loading] = props.valenbici;
 
   const [showStations, toggleShowStations] = useToggle(true);
   const [showVoronoi, toggleShowVoronoi] = useToggle(true);
   const [invertColors, toggleInvertColors] = useToggle(false);
-
   const [showSidebar, toggleShowSidebar] = useToggle(true);
+
+  const [availbleRange, setAvailableRange] = useState<[number, number]>([
+    0, 100,
+  ]);
 
   const maxTotal = useMemo(() => {
     let maxTotal = 0;
@@ -27,11 +32,6 @@ const Heatmap = (props: { valenbici: UseValenbiciResponse }) => {
     });
     return maxTotal;
   }, [stations]);
-
-  const [availbleRange, setAvailableRange] = useState<[number, number]>([
-    0,
-    maxTotal,
-  ]);
 
   const colors = useMemo(() => {
     const colors: { [key: string]: string } = {};
@@ -50,6 +50,12 @@ const Heatmap = (props: { valenbici: UseValenbiciResponse }) => {
       station.available >= availbleRange[0] &&
       station.available <= availbleRange[1]
   );
+
+  useEffect(() => {
+    setAvailableRange([0, maxTotal]);
+
+    console.log(maxTotal);
+  }, [maxTotal]);
 
   return (
     <div
@@ -75,24 +81,40 @@ const Heatmap = (props: { valenbici: UseValenbiciResponse }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {showVoronoi &&
-          stationsFiltered.map((station) => (
-            <Polygon
-              key={station.id}
-              positions={VALENBICI_VORONOI[station.id].region}
-              pathOptions={{
-                stroke: true,
-                color: 'white',
-                weight: 2,
-                opacity: 0.8,
-                dashArray: '3',
-                fillOpacity: 0.5,
-                fillColor: colors[station.id],
-              }}
-            />
-          ))}
+          stationsFiltered
+            .filter((station) => VALENBICI_VORONOI[station.id])
+            .map((station) => (
+              <Polygon
+                key={station.id}
+                positions={VALENBICI_VORONOI[station.id].region}
+                css={{
+                  cursor: 'grab',
+                }}
+                pathOptions={{
+                  stroke: true,
+                  color: 'white',
+                  weight: 2,
+                  opacity: 0.8,
+                  dashArray: '3',
+                  fillOpacity: 0.5,
+                  fillColor: colors[station.id],
+                }}
+              />
+            ))}
         {showStations &&
           stationsFiltered.map((station) => (
-            <Marker key={station.id} position={station.position}>
+            <Marker
+              key={station.id}
+              position={station.position}
+              icon={
+                new Icon({
+                  iconUrl: markerIconPng,
+                  iconSize: [25, 41],
+                  iconAnchor: [12, 41],
+                  popupAnchor: [1, -34],
+                })
+              }
+            >
               <Popup>
                 <div>{station.address}</div>
                 <div>

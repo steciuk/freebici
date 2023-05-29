@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "deploy": "npm run build && firebase deploy"
+    "deploy": "npm run build && npx firebase deploy"
   },
   "private": true,
   "dependencies": {
