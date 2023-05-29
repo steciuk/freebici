@@ -1,7 +1,5 @@
-import useValenbici, {
-  UseValenbiciResponse,
-} from 'src/apis/valenbici/useValenbici';
 import Navbar from 'src/components/main/Navbar';
+import useValenbici, { UseValenbiciResponse } from 'src/hooks/valenbici/useValenbici';
 import Heatmap from 'src/pages/Heatmap';
 
 export function App() {

@@ -2,7 +2,7 @@ import { ValenbiciRecord, ValenbiciStation } from 'src/apis/valenbici/types';
 
 export function recordToStation(record: ValenbiciRecord): ValenbiciStation {
   return {
-    id: record.recordid,
+    id: record.fields.number.toString(),
     address: record.fields.address,
     total: record.fields.total,
     free: record.fields.free,
