@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import LeafletMap from 'src/components/common/map/LeafletMap';
-import Markers from 'src/components/common/map/Markers';
+import StationMarker from 'src/components/common/map/StationMarker';
+import StationPopup from 'src/components/common/map/StationPopup';
 import Voronoi from 'src/components/common/map/Voronoi';
 import Sidebar from 'src/components/common/Sidebar';
 import useToggle from 'src/hooks/util/useToggle';
@@ -9,12 +10,10 @@ import { UseValenbiciResponse } from 'src/hooks/valenbici/useValenbici';
 import { FormControlLabel, Slider, Switch } from '@mui/material';
 
 const Heatmap = (props: { valenbici: UseValenbiciResponse }) => {
-  const [stations, _error, loading] = props.valenbici;
+  const [stations] = props.valenbici;
 
-  const [showStations, toggleShowStations] = useToggle(true);
-  const [showVoronoi, toggleShowVoronoi] = useToggle(true);
+  const [showStations, toggleShowStations] = useToggle(false);
   const [invertColors, toggleInvertColors] = useToggle(false);
-
   const [availableRange, setAvailableRange] = useState<[number, number]>([
     0, 100,
   ]);
@@ -51,36 +50,37 @@ const Heatmap = (props: { valenbici: UseValenbiciResponse }) => {
       }}
     >
       <LeafletMap>
-        {showVoronoi && (
-          <Voronoi stations={stationsFiltered} invertColors={invertColors} />
+        {!showStations && (
+          <Voronoi
+            stations={stationsFiltered}
+            invertColors={invertColors}
+            selectable
+          />
         )}
-        {showStations && <Markers stations={stationsFiltered} />}
+        {showStations &&
+          stationsFiltered.map((station) => (
+            <StationMarker key={station.id} station={station}>
+              <StationPopup station={station} />
+            </StationMarker>
+          ))}
       </LeafletMap>
 
       <Sidebar>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={showStations}
-              onChange={() => toggleShowStations()}
-            />
-          }
-          label="Show stations"
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={showVoronoi}
-              onChange={() => toggleShowVoronoi()}
-            />
-          }
-          label="Show voronoi"
-        />
+        <div>
+          <span>Heatmap</span>
+          <Switch
+            checked={showStations}
+            onChange={() => toggleShowStations()}
+            color="default"
+          />
+          <span>Stations</span>
+        </div>
         <FormControlLabel
           control={
             <Switch
               checked={invertColors}
               onChange={() => toggleInvertColors()}
+              disabled={showStations}
             />
           }
           label="Invert colors"

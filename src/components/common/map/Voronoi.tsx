@@ -1,14 +1,36 @@
-import React, { memo, useMemo } from 'react';
+import { LeafletMouseEvent } from 'leaflet';
+import React, { memo, useMemo, useState } from 'react';
 import { Polygon } from 'react-leaflet';
 import { ValenbiciStation } from 'src/apis/valenbici/types';
 import { VALENBICI_VORONOI } from 'src/apis/valenbici/voronoi/voronoi';
+import StationMarker from 'src/components/common/map/StationMarker';
+import StationPopup from 'src/components/common/map/StationPopup';
+
+const voronoiStyle = {
+  stroke: true,
+  weight: 2,
+  opacity: 0.8,
+  fillOpacity: 0.5,
+  color: 'white',
+  dashArray: '3',
+};
+
+const selectedVoronoiStyle = {
+  ...voronoiStyle,
+  color: '#666',
+  dashArray: '',
+  weight: 4,
+};
 
 const Voronoi = (props: {
   stations: ValenbiciStation[];
   invertColors: boolean;
+  selectable?: boolean;
 }) => {
+  const [selectedStation, setSelectedStation] = useState<string | null>(null);
+
   const stationsWithColors = useMemo(() => {
-    const stationsWithColors: (ValenbiciStation & { color: string })[] = [];
+    const stationsWithColors: ValenbiciStationWithColor[] = [];
 
     props.stations.forEach((station) => {
       if (!station.open)
@@ -28,6 +50,21 @@ const Voronoi = (props: {
     return stationsWithColorsInVoronoiData;
   }, [props.stations, props.invertColors]);
 
+  const handleSelect = (
+    station: ValenbiciStation,
+    event: LeafletMouseEvent
+  ) => {
+    if (!props.selectable) return;
+
+    if (selectedStation === station.id) {
+      setSelectedStation(null);
+      event.target.bringToBack();
+    } else {
+      setSelectedStation(station.id);
+      event.target.bringToFront();
+    }
+  };
+
   return (
     <>
       {stationsWithColors.map((station) => (
@@ -35,18 +72,19 @@ const Voronoi = (props: {
           key={station.id}
           positions={VALENBICI_VORONOI[station.id].region}
           css={{
-            cursor: 'grab',
+            cursor: props.selectable ? 'pointer' : 'grab',
           }}
-          pathOptions={{
-            stroke: true,
-            color: 'white',
-            weight: 2,
-            opacity: 0.8,
-            dashArray: '3',
-            fillOpacity: 0.5,
-            fillColor: station.color,
+          pathOptions={getVoronoiStyle(station, selectedStation === station.id)}
+          eventHandlers={{
+            click: (e) => handleSelect(station, e),
           }}
-        />
+        >
+          {selectedStation === station.id && (
+            <StationMarker station={station} popupOpened>
+              <StationPopup station={station} />
+            </StationMarker>
+          )}
+        </Polygon>
       ))}
     </>
   );
@@ -56,5 +94,15 @@ function mapValueToColor(value: number): string {
   const hue = value * 120;
   return `hsl(${hue}, 100%, 50%)`;
 }
+
+function getVoronoiStyle(
+  station: ValenbiciStationWithColor,
+  selected: boolean
+) {
+  if (selected) return { ...selectedVoronoiStyle, fillColor: station.color };
+  return { ...voronoiStyle, fillColor: station.color };
+}
+
+type ValenbiciStationWithColor = ValenbiciStation & { color: string };
 
 export default memo(Voronoi);
