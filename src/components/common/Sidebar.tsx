@@ -1,6 +1,6 @@
 import React from 'react';
 import useToggle from 'src/hooks/util/useToggle';
-import { Children } from 'src/utils/types/Props';
+import { Children } from 'src/utils/types/Children';
 
 import CloseIcon from '@mui/icons-material/Close';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';

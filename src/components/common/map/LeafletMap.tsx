@@ -2,7 +2,7 @@ import 'leaflet/dist/leaflet.css';
 
 import React, { memo } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
-import { Children } from 'src/utils/types/Props';
+import { Children } from 'src/utils/types/Children';
 
 const VALENCIA_CENTER: [number, number] = [39.474809, -0.376574];
 
