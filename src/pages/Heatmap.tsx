@@ -28,19 +28,15 @@ const Heatmap = (props: { valenbici: UseValenbiciResponse }) => {
   }, [stations]);
 
   const stationsFiltered = useMemo(() => {
-    stations.filter(
+    return stations.filter(
       (station) =>
         station.available >= availableRange[0] &&
         station.available <= availableRange[1]
     );
-
-    return stations;
   }, [stations, availableRange]);
 
   useEffect(() => {
     setAvailableRange([0, maxTotal]);
-
-    console.log(maxTotal);
   }, [maxTotal]);
 
   return (
