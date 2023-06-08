@@ -1,16 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { ValenbiciState } from 'src/apis/valenbici/types';
 import LeafletMap from 'src/components/common/map/LeafletMap';
 import StationMarker from 'src/components/common/map/StationMarker';
 import StationPopup from 'src/components/common/map/StationPopup';
 import Voronoi from 'src/components/common/map/Voronoi';
 import Sidebar from 'src/components/common/Sidebar';
 import useToggle from 'src/hooks/util/useToggle';
-import { UseValenbiciResponse } from 'src/hooks/valenbici/useValenbici';
 
-import { FormControlLabel, Slider, Switch } from '@mui/material';
+import { Button, FormControlLabel, Slider, Switch } from '@mui/material';
 
-const Heatmap = (props: { valenbici: UseValenbiciResponse }) => {
-  const [stations] = props.valenbici;
+const Heatmap = (props: {
+  valenbici: ValenbiciState;
+  getValenbici: (force?: boolean) => Promise<void>;
+}) => {
+  const { valenbici, getValenbici } = props;
+  const { stations, lastUpdate, loading } = valenbici;
 
   const [showStations, toggleShowStations] = useToggle(false);
   const [invertColors, toggleInvertColors] = useToggle(false);
@@ -37,6 +41,10 @@ const Heatmap = (props: { valenbici: UseValenbiciResponse }) => {
   useEffect(() => {
     setAvailableRange([0, maxTotal]);
   }, [maxTotal]);
+
+  useEffect(() => {
+    getValenbici();
+  }, [getValenbici]);
 
   return (
     <div
@@ -67,6 +75,19 @@ const Heatmap = (props: { valenbici: UseValenbiciResponse }) => {
 
       <Sidebar>
         <div>
+          <span>Last update: </span>
+          <span>{lastUpdate?.toLocaleString()}</span>
+          <div css={{ marginTop: '0.5rem' }}>
+            <Button
+              variant="contained"
+              disabled={loading}
+              onClick={() => getValenbici(true)}
+            >
+              Refresh
+            </Button>
+          </div>
+        </div>
+        <div css={{ marginTop: '1rem' }}>
           <span>Heatmap</span>
           <Switch
             checked={showStations}
