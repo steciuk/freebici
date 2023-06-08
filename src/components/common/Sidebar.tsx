@@ -21,7 +21,7 @@ const Sidebar = (props: { children?: Children }) => {
         alignItems: 'flex-start',
         zIndex: 1000,
         backgroundColor: 'white', // TODO: change to theme
-        padding: '2rem',
+        padding: '1rem 2rem',
         transition: 'right 0.5s',
         borderRadius: '0 0 0 0.5rem',
         '@media (min-width: 1000px)': {

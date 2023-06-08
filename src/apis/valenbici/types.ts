@@ -50,3 +50,11 @@ export type ValenbiciStation = {
   open: boolean;
   position: [number, number];
 };
+
+export type ValenbiciState = {
+  stations: ValenbiciStation[];
+  loading: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error: any | null;
+  lastUpdate: Date | null;
+};
