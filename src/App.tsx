@@ -1,14 +1,15 @@
 import axios from 'axios';
-import { useCallback, useState } from 'react';
+import { lazy, useCallback, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { recordToStation } from 'src/apis/valenbici/convertRecordToStation';
 import { ValenbiciResponse, ValenbiciState } from 'src/apis/valenbici/types';
 import { VALENBICI_URL } from 'src/apis/valenbici/url';
-import { recordToStation } from 'src/apis/valenbici/utils';
 import Navbar from 'src/components/main/Navbar';
-import Finder from 'src/pages/Finder';
-import Heatmap from 'src/pages/Heatmap';
-import Historic from 'src/pages/Historic';
 import Home from 'src/pages/Home';
+
+const Historic = lazy(() => import('src/pages/Historic/Historic'));
+const Finder = lazy(() => import('src/pages/Finder'));
+const Heatmap = lazy(() => import('src/pages/Heatmap'));
 
 export function App() {
   const [valenbici, setValenbici] = useState<ValenbiciState>({
