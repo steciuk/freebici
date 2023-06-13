@@ -1,10 +1,12 @@
 import axios from 'axios';
-import { lazy, useCallback, useState } from 'react';
+import { lazy, Suspense, useCallback, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { recordToStation } from 'src/apis/valenbici/convertRecordToStation';
 import { ValenbiciResponse, ValenbiciState } from 'src/apis/valenbici/types';
 import { VALENBICI_URL } from 'src/apis/valenbici/url';
+import Loader from 'src/components/common/Loader';
 import Navbar from 'src/components/main/Navbar';
+import HistoricGuard from 'src/pages/Historic/HistoricGuard';
 import Home from 'src/pages/Home';
 
 const Historic = lazy(() => import('src/pages/Historic/Historic'));
@@ -18,6 +20,12 @@ export function App() {
     error: null,
     lastUpdate: null,
   });
+  const [navigatedToHistoric, setNavigatedToHistoric] =
+    useState<boolean>(false);
+
+  const handleNavigateToHistoric = () => {
+    setNavigatedToHistoric(true);
+  };
 
   const handleGetValenbici = useCallback(
     async (force = false) => {
@@ -80,7 +88,23 @@ export function App() {
               />
             }
           />
-          <Route path="/historic" element={<Historic />} />
+          <Route
+            element={
+              <HistoricGuard
+                navigatedToHistoric={navigatedToHistoric}
+                handleNavigateToHistoric={handleNavigateToHistoric}
+              />
+            }
+          >
+            <Route
+              path="/historic"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <Historic />
+                </Suspense>
+              }
+            />
+          </Route>
           <Route path="/finder" element={<Finder />} />
         </Routes>
       </main>

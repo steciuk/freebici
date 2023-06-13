@@ -97,37 +97,52 @@ const Navbar = () => {
           )}
         </Button>
         {navbarOpened && (
-          <nav
-            css={{
-              position: 'absolute',
-              top: '3rem',
-              right: 0,
-              backgroundColor: '#3f51b5',
-              padding: '0.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.5rem',
-              zIndex: 1001,
-            }}
-          >
-            {PATHS.map((path) => (
-              <Link key={path.path} to={path.path}>
-                <div
-                  css={{
-                    backgroundColor: '#023047',
-                    padding: '0.5rem',
-                    borderRadius: '0.2rem',
-                    transition: 'background-color 0.2s',
-                    '&:hover': {
-                      backgroundColor: '#219ebc',
-                    },
-                  }}
-                >
-                  {path.name}
-                </div>
-              </Link>
-            ))}
-          </nav>
+          <>
+            <div
+              className="backdrop"
+              css={{
+                position: 'fixed',
+                top: '3rem',
+                left: 0,
+                bottom: 0,
+                right: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                zIndex: 1001,
+              }}
+              onClick={() => toggleNavbarOpened()}
+            />
+            <nav
+              css={{
+                position: 'absolute',
+                top: '3rem',
+                right: 0,
+                backgroundColor: '#3f51b5',
+                padding: '0.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+                zIndex: 1001,
+              }}
+            >
+              {PATHS.map((path) => (
+                <Link key={path.path} to={path.path}>
+                  <div
+                    css={{
+                      backgroundColor: '#023047',
+                      padding: '0.5rem',
+                      borderRadius: '0.2rem',
+                      transition: 'background-color 0.2s',
+                      '&:hover': {
+                        backgroundColor: '#219ebc',
+                      },
+                    }}
+                  >
+                    {path.name}
+                  </div>
+                </Link>
+              ))}
+            </nav>
+          </>
         )}
       </div>
     </div>

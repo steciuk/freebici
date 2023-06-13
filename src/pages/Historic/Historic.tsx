@@ -61,7 +61,7 @@ const Historic = () => {
     time: string;
   }>({
     date: EARLIEST.date,
-    time: EARLIEST.time,
+    time: '16:00',
   });
   const { date, time } = useMemo(() => dateTime, [dateTime]);
   const [animationPlaying, toggleAnimationPlaying] = useToggle(false);
@@ -90,7 +90,6 @@ const Historic = () => {
 
   useEffect(() => {
     if (!animationPlaying) return;
-    console.log('animation playing');
 
     const interval = playAnimation(setDateTime, animationSpeed);
 
@@ -177,7 +176,6 @@ function playAnimation(
   >,
   speed: number
 ): NodeJS.Timer {
-  console.log('new interval');
   const interval = setInterval(() => {
     setDateTime((dateTime) => {
       const current = dateJs(dateTime.date, dateTime.time);

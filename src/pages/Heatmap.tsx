@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ValenbiciState } from 'src/apis/valenbici/types';
+import Loader from 'src/components/common/Loader';
 import LeafletMap from 'src/components/common/map/LeafletMap';
 import StationMarker from 'src/components/common/map/StationMarker';
 import StationPopup from 'src/components/common/map/StationPopup';
@@ -45,6 +46,8 @@ const Heatmap = (props: {
   useEffect(() => {
     getValenbici();
   }, [getValenbici]);
+
+  if (loading || stations.length === 0) return <Loader />;
 
   return (
     <div
