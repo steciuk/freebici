@@ -45,7 +45,6 @@ export type ValenbiciStation = {
   id: string;
   address: string;
   total: number;
-  free: number;
   available: number;
   open: boolean;
   position: [number, number];

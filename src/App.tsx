@@ -1,14 +1,18 @@
 import axios from 'axios';
-import { useCallback, useState } from 'react';
+import { lazy, Suspense, useCallback, useReducer, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { recordToStation } from 'src/apis/valenbici/convertRecordToStation';
 import { ValenbiciResponse, ValenbiciState } from 'src/apis/valenbici/types';
 import { VALENBICI_URL } from 'src/apis/valenbici/url';
-import { recordToStation } from 'src/apis/valenbici/utils';
+import Loader from 'src/components/common/Loader';
 import Navbar from 'src/components/main/Navbar';
-import Finder from 'src/pages/Finder';
-import Heatmap from 'src/pages/Heatmap';
-import Historic from 'src/pages/Historic';
+import { historicDataReducer } from 'src/pages/Historic/historicDataReducer';
+import HistoricGuard from 'src/pages/Historic/HistoricGuard';
 import Home from 'src/pages/Home';
+
+const Historic = lazy(() => import('src/pages/Historic/Historic'));
+const Finder = lazy(() => import('src/pages/Finder'));
+const Heatmap = lazy(() => import('src/pages/Heatmap'));
 
 export function App() {
   const [valenbici, setValenbici] = useState<ValenbiciState>({
@@ -17,9 +21,24 @@ export function App() {
     error: null,
     lastUpdate: null,
   });
+  const [navigatedToHistoric, setNavigatedToHistoric] =
+    useState<boolean>(false);
+
+  const [historicValenbiciData, dispachHistoricValenbiciData] = useReducer(
+    historicDataReducer,
+    {
+      loading: false,
+      errors: [],
+      data: null,
+    }
+  );
+
+  const handleNavigateToHistoric = () => {
+    setNavigatedToHistoric(true);
+  };
 
   const handleGetValenbici = useCallback(
-    async (force = false) => {
+    (force = false) => {
       if (!force && valenbici.lastUpdate !== null) return;
 
       const fetchData = async () => {
@@ -33,6 +52,7 @@ export function App() {
             lastUpdate: new Date(),
           });
         } catch (error) {
+          console.error(error);
           setValenbici((prev) => ({
             stations: prev.stations,
             loading: false,
@@ -79,7 +99,26 @@ export function App() {
               />
             }
           />
-          <Route path="/historic" element={<Historic />} />
+          <Route
+            element={
+              <HistoricGuard
+                navigatedToHistoric={navigatedToHistoric}
+                handleNavigateToHistoric={handleNavigateToHistoric}
+              />
+            }
+          >
+            <Route
+              path="/historic"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <Historic
+                    historicData={historicValenbiciData}
+                    dispatchHistoricData={dispachHistoricValenbiciData}
+                  />
+                </Suspense>
+              }
+            />
+          </Route>
           <Route path="/finder" element={<Finder />} />
         </Routes>
       </main>

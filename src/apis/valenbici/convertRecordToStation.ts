@@ -5,7 +5,6 @@ export function recordToStation(record: ValenbiciRecord): ValenbiciStation {
     id: record.fields.number.toString(),
     address: record.fields.address,
     total: record.fields.total,
-    free: record.fields.free,
     available: record.fields.available,
     open: record.fields.open === 'T',
     position: [record.geometry.coordinates[1], record.geometry.coordinates[0]],
