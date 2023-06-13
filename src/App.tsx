@@ -52,6 +52,7 @@ export function App() {
             lastUpdate: new Date(),
           });
         } catch (error) {
+          console.error(error);
           setValenbici((prev) => ({
             stations: prev.stations,
             loading: false,

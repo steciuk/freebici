@@ -125,6 +125,7 @@ const Historic = ({
           },
         });
       } catch (errors) {
+        console.error(errors);
         dispatchHistoricData({
           type: HistoricDataActionType.ERROR,
           payload: {
@@ -152,6 +153,7 @@ const Historic = ({
         width: '100%',
         height: '100%',
         position: 'relative',
+        overflow: 'hidden',
       }}
     >
       <LeafletMap>
