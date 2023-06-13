@@ -1,12 +1,17 @@
+import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ValenbiciStation } from 'src/apis/valenbici/types';
-import historicJson from 'src/assets/data/valenbici_historic.json';
-import staticJson from 'src/assets/data/valenbici_static.json';
+import Loader from 'src/components/common/Loader';
 import LeafletMap from 'src/components/common/map/LeafletMap';
 import Voronoi from 'src/components/common/map/Voronoi';
 import Sidebar from 'src/components/common/Sidebar';
 import useToggle from 'src/hooks/util/useToggle';
+import {
+  HistoricDataAction,
+  HistoricDataActionType,
+  HistoricDataState,
+} from 'src/pages/Historic/historicDataReducer';
 import { historicToStation } from 'src/pages/Historic/historicToStation';
 import {
   HistoricValenbiciData,
@@ -47,14 +52,13 @@ const animationSpeedMarks = [
   },
 ];
 
-const Historic = () => {
-  const [historicValenbiciData] = useState<HistoricValenbiciData>(
-    historicJson as unknown as HistoricValenbiciData
-  );
-  const [staticValenbiciData] = useState<StaticValenbiciData>(
-    staticJson as unknown as StaticValenbiciData
-  );
-
+const Historic = ({
+  historicData,
+  dispatchHistoricData,
+}: {
+  historicData: HistoricDataState;
+  dispatchHistoricData: React.Dispatch<HistoricDataAction>;
+}) => {
   const [stations, setStations] = useState<ValenbiciStation[]>([]);
   const [dateTime, setDateTime] = useState<{
     date: string;
@@ -79,14 +83,14 @@ const Historic = () => {
   };
 
   useEffect(() => {
-    if (historicValenbiciData === null || staticValenbiciData === null) return;
+    if (historicData.data === null) return;
 
     const newStations = historicToStation(
-      historicValenbiciData[date][time],
-      staticValenbiciData
+      historicData.data.historic[date][time],
+      historicData.data.static
     );
     setStations(newStations);
-  }, [historicValenbiciData, staticValenbiciData, date, time]);
+  }, [historicData, date, time]);
 
   useEffect(() => {
     if (!animationPlaying) return;
@@ -97,6 +101,46 @@ const Historic = () => {
       clearInterval(interval);
     };
   }, [animationPlaying, animationSpeed]);
+
+  useEffect(() => {
+    if (historicData.data !== null || historicData.loading) return;
+    console.log('fetching data');
+
+    const fetchData = async () => {
+      try {
+        const response = await Promise.all([
+          axios.get<StaticValenbiciData>('/assets/valenbici_static.json'),
+          axios.get<HistoricValenbiciData>('/assets/valenbici_historic.json'),
+        ]);
+
+        dispatchHistoricData({
+          type: HistoricDataActionType.SUCCESS,
+          payload: {
+            static: response[0].data,
+            historic: response[1].data,
+          },
+        });
+      } catch (errors) {
+        dispatchHistoricData({
+          type: HistoricDataActionType.ERROR,
+          payload: {
+            errors: errors,
+          },
+        });
+      }
+    };
+
+    dispatchHistoricData({
+      type: HistoricDataActionType.FETCHING,
+    });
+
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (historicData.loading || historicData.data === null) {
+    return <Loader />;
+  }
 
   return (
     <div

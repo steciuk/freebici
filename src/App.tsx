@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { lazy, Suspense, useCallback, useState } from 'react';
+import { lazy, Suspense, useCallback, useReducer, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { recordToStation } from 'src/apis/valenbici/convertRecordToStation';
 import { ValenbiciResponse, ValenbiciState } from 'src/apis/valenbici/types';
 import { VALENBICI_URL } from 'src/apis/valenbici/url';
 import Loader from 'src/components/common/Loader';
 import Navbar from 'src/components/main/Navbar';
+import { historicDataReducer } from 'src/pages/Historic/historicDataReducer';
 import HistoricGuard from 'src/pages/Historic/HistoricGuard';
 import Home from 'src/pages/Home';
 
@@ -23,12 +24,21 @@ export function App() {
   const [navigatedToHistoric, setNavigatedToHistoric] =
     useState<boolean>(false);
 
+  const [historicValenbiciData, dispachHistoricValenbiciData] = useReducer(
+    historicDataReducer,
+    {
+      loading: false,
+      errors: [],
+      data: null,
+    }
+  );
+
   const handleNavigateToHistoric = () => {
     setNavigatedToHistoric(true);
   };
 
   const handleGetValenbici = useCallback(
-    async (force = false) => {
+    (force = false) => {
       if (!force && valenbici.lastUpdate !== null) return;
 
       const fetchData = async () => {
@@ -100,7 +110,10 @@ export function App() {
               path="/historic"
               element={
                 <Suspense fallback={<Loader />}>
-                  <Historic />
+                  <Historic
+                    historicData={historicValenbiciData}
+                    dispatchHistoricData={dispachHistoricValenbiciData}
+                  />
                 </Suspense>
               }
             />

@@ -12,7 +12,7 @@ import { Button, FormControlLabel, Slider, Switch } from '@mui/material';
 
 const Heatmap = (props: {
   valenbici: ValenbiciState;
-  getValenbici: (force?: boolean) => Promise<void>;
+  getValenbici: (force?: boolean) => void;
 }) => {
   const { valenbici, getValenbici } = props;
   const { stations, lastUpdate, loading } = valenbici;
