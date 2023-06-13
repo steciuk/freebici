@@ -109,8 +109,12 @@ const Historic = ({
     const fetchData = async () => {
       try {
         const response = await Promise.all([
-          axios.get<StaticValenbiciData>('/assets/valenbici_static.json'),
-          axios.get<HistoricValenbiciData>('/assets/valenbici_historic.json'),
+          axios.get<StaticValenbiciData>(
+            'https://steciuk.github.io/freebici/valenbici_static.json'
+          ),
+          axios.get<HistoricValenbiciData>(
+            'https://steciuk.github.io/freebici/valenbici_historic.json'
+          ),
         ]);
 
         dispatchHistoricData({
