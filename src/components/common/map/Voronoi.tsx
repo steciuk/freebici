@@ -3,7 +3,7 @@ import React, { memo, useMemo, useState } from 'react';
 import { Polygon } from 'react-leaflet';
 import { ValenbiciStation } from 'src/apis/valenbici/types';
 import { VALENBICI_VORONOI } from 'src/apis/valenbici/voronoi/voronoi';
-import StationMarker from 'src/components/common/map/StationMarker';
+import LeafletMarker from 'src/components/common/map/LeafletMarker';
 import StationPopup from 'src/components/common/map/StationPopup';
 
 const voronoiStyle = {
@@ -80,9 +80,9 @@ const Voronoi = (props: {
           }}
         >
           {selectedStation === station.id && (
-            <StationMarker station={station} popupOpened>
+            <LeafletMarker position={station.position} popupOpened>
               <StationPopup station={station} />
-            </StationMarker>
+            </LeafletMarker>
           )}
         </Polygon>
       ))}

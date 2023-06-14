@@ -11,7 +11,7 @@ import HistoricGuard from 'src/pages/Historic/HistoricGuard';
 import Home from 'src/pages/Home';
 
 const Historic = lazy(() => import('src/pages/Historic/Historic'));
-const Finder = lazy(() => import('src/pages/Finder'));
+const Finder = lazy(() => import('src/pages/Finder/Finder'));
 const Heatmap = lazy(() => import('src/pages/Heatmap'));
 
 export function App() {

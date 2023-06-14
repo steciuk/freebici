@@ -1,16 +1,17 @@
 import { Icon } from 'leaflet';
-import markerIconPng from 'leaflet/dist/images/marker-icon.png';
 import React, { memo, useEffect, useRef } from 'react';
 import { Marker } from 'react-leaflet';
-import { ValenbiciStation } from 'src/apis/valenbici/types';
+import blueMarkerIconPng from 'src/assets/marker-icon-blue.png';
+import greenMarkerIconPng from 'src/assets/marker-icon-green.png';
+import redMarkerIconPng from 'src/assets/marker-icon-red.png';
 import { Children } from 'src/utils/types/Children';
 
-const StationMarker = (props: {
-  station: ValenbiciStation;
+const LeafletMarker = (props: {
+  position: [number, number];
+  color?: 'blue' | 'green' | 'red';
   children?: Children;
   popupOpened?: boolean;
 }) => {
-  const { station } = props;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markerRef = useRef<any>(null);
 
@@ -20,13 +21,17 @@ const StationMarker = (props: {
     }
   }, [markerRef, props.popupOpened]);
 
+  let iconUrl = blueMarkerIconPng;
+  if (props.color === 'green') iconUrl = greenMarkerIconPng;
+  else if (props.color === 'red') iconUrl = redMarkerIconPng;
+
   return (
     <Marker
       ref={markerRef}
-      position={station.position}
+      position={props.position}
       icon={
         new Icon({
-          iconUrl: markerIconPng,
+          iconUrl: iconUrl,
           iconSize: [25, 41],
           iconAnchor: [12, 41],
           popupAnchor: [1, -34],
@@ -38,4 +43,4 @@ const StationMarker = (props: {
   );
 };
 
-export default memo(StationMarker);
+export default memo(LeafletMarker);

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ValenbiciState } from 'src/apis/valenbici/types';
 import Loader from 'src/components/common/Loader';
 import LeafletMap from 'src/components/common/map/LeafletMap';
-import StationMarker from 'src/components/common/map/StationMarker';
+import LeafletMarker from 'src/components/common/map/LeafletMarker';
 import StationPopup from 'src/components/common/map/StationPopup';
 import Voronoi from 'src/components/common/map/Voronoi';
 import Sidebar from 'src/components/common/Sidebar';
@@ -70,9 +70,9 @@ const Heatmap = (props: {
         )}
         {showStations &&
           stationsFiltered.map((station) => (
-            <StationMarker key={station.id} station={station}>
+            <LeafletMarker key={station.id} position={station.position}>
               <StationPopup station={station} />
-            </StationMarker>
+            </LeafletMarker>
           ))}
       </LeafletMap>
 
