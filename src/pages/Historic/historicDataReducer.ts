@@ -1,7 +1,7 @@
 import {
   HistoricValenbiciData,
   StaticValenbiciData,
-} from 'src/pages/Historic/types';
+} from 'src/apis/historic/types';
 
 export enum HistoricDataActionType {
   FETCHING = 'FETCHING',
