@@ -77,6 +77,13 @@ const Historic = ({
     const newDate = event.format('YYYY-MM-DD');
     const newTime = event.format('HH:mm');
 
+    if (newDate === 'Invalid date' || newTime === 'Invalid date') return;
+    if (newDate < EARLIEST.date) return;
+    if (newDate > LATEST.date) return;
+    if (newDate === EARLIEST.date && newTime < EARLIEST.time) return;
+    if (newDate === LATEST.date && newTime > LATEST.time) return;
+    if (!newTime.endsWith('00')) return;
+
     setDateTime({
       date: newDate,
       time: newTime,
@@ -181,6 +188,9 @@ const Historic = ({
           format="DD/MM/YYYY HH:mm"
           ampm={false}
           views={['year', 'month', 'day', 'hours']}
+          shouldDisableTime={(value, view) =>
+            view === 'minutes' && value.minute() !== 0
+          }
         />
         <Button
           css={{
