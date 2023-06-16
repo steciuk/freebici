@@ -159,6 +159,9 @@ const Finder = (props: {
       <LeafletMap>
         {showBoundingBox && (
           <Rectangle
+            css={{
+              cursor: 'grab',
+            }}
             bounds={[
               [VALENCIA_BOUNDING_BOX.lat[0], VALENCIA_BOUNDING_BOX.lon[0]],
               [VALENCIA_BOUNDING_BOX.lat[1], VALENCIA_BOUNDING_BOX.lon[1]],
@@ -336,7 +339,6 @@ function computeWaypoints(
 
     newHops.push(hops[hops.length - 1]);
     hops = newHops;
-    console.log(hops);
   }
 
   const cyclingHops = hops.filter(
