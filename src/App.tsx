@@ -119,7 +119,12 @@ export function App() {
               }
             />
           </Route>
-          <Route path="/finder" element={<Finder />} />
+          <Route
+            path="/finder"
+            element={
+              <Finder valenbici={valenbici} getValenbici={handleGetValenbici} />
+            }
+          />
         </Routes>
       </main>
     </div>

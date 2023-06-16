@@ -112,7 +112,6 @@ const Historic = ({
 
   useEffect(() => {
     if (historicData.data !== null || historicData.loading) return;
-    console.log('fetching data');
 
     const fetchData = async () => {
       try {
