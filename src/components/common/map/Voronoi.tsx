@@ -3,7 +3,7 @@ import React, { memo, useMemo, useState } from 'react';
 import { Polygon } from 'react-leaflet';
 import { ValenbiciStation } from 'src/apis/valenbici/types';
 import { VALENBICI_VORONOI } from 'src/apis/valenbici/voronoi/voronoi';
-import StationMarker from 'src/components/common/map/StationMarker';
+import LeafletMarker from 'src/components/common/map/LeafletMarker';
 import StationPopup from 'src/components/common/map/StationPopup';
 
 const voronoiStyle = {
@@ -33,8 +33,9 @@ const Voronoi = (props: {
     const stationsWithColors: ValenbiciStationWithColor[] = [];
 
     props.stations.forEach((station) => {
-      if (!station.open)
-        return stationsWithColors.push({ ...station, color: 'black' });
+      // TODO: analyze if 'open' field means the station doesn't work
+      // if (!station.open)
+      //   return stationsWithColors.push({ ...station, color: 'black' });
 
       const value = station.available / station.total;
       const color = mapValueToColor(props.invertColors ? 1 - value : value);
@@ -80,9 +81,9 @@ const Voronoi = (props: {
           }}
         >
           {selectedStation === station.id && (
-            <StationMarker station={station} popupOpened>
+            <LeafletMarker position={station.position} color="blue" popupOpened>
               <StationPopup station={station} />
-            </StationMarker>
+            </LeafletMarker>
           )}
         </Polygon>
       ))}

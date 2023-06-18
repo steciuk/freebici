@@ -8,9 +8,11 @@ import { Button } from '@mui/material';
 
 const PATHS: { path: string; name: string }[] = [
   { path: '/heatmap', name: 'Heatmap' },
-  { path: '/historic', name: 'Historic' },
+  { path: '/history', name: 'History' },
   { path: '/finder', name: 'Finder' },
 ];
+
+const navbarHeight = '3.5rem';
 
 const Navbar = () => {
   const [navbarOpened, toggleNavbarOpened] = useToggle(false);
@@ -18,11 +20,12 @@ const Navbar = () => {
   return (
     <div
       css={{
-        height: '3rem',
+        height: navbarHeight,
         display: 'grid',
         gridTemplateColumns: '8rem 1fr',
-        backgroundColor: '#3f51b5',
+        backgroundColor: 'hsl(230deg, 48%, 47%)',
         color: 'white',
+        flexShrink: 0,
       }}
     >
       <div
@@ -59,7 +62,8 @@ const Navbar = () => {
                 borderRadius: '0.2rem',
                 transition: 'background-color 0.2s',
                 '&:hover': {
-                  backgroundColor: '#219ebc',
+                  backgroundColor: 'hsl(230deg, 48%, 94%)',
+                  color: '#1a535c',
                 },
               }}
             >
@@ -102,26 +106,26 @@ const Navbar = () => {
               className="backdrop"
               css={{
                 position: 'fixed',
-                top: '3rem',
+                top: navbarHeight,
                 left: 0,
                 bottom: 0,
                 right: 0,
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                zIndex: 1001,
+                zIndex: 1002,
               }}
               onClick={() => toggleNavbarOpened()}
             />
             <nav
               css={{
                 position: 'absolute',
-                top: '3rem',
+                top: navbarHeight,
                 right: 0,
-                backgroundColor: '#3f51b5',
+                backgroundColor: 'hsl(230deg, 48%, 47%)',
                 padding: '0.5rem',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '0.5rem',
-                zIndex: 1001,
+                zIndex: 1002,
               }}
             >
               {PATHS.map((path) => (
@@ -133,7 +137,8 @@ const Navbar = () => {
                       borderRadius: '0.2rem',
                       transition: 'background-color 0.2s',
                       '&:hover': {
-                        backgroundColor: '#219ebc',
+                        backgroundColor: 'hsl(230deg, 48%, 94%)',
+                        color: '#1a535c',
                       },
                     }}
                   >

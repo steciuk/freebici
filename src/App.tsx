@@ -1,6 +1,9 @@
+import 'react-toastify/dist/ReactToastify.css';
+
 import axios from 'axios';
 import { lazy, Suspense, useCallback, useReducer, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 import { recordToStation } from 'src/apis/valenbici/convertRecordToStation';
 import { ValenbiciResponse, ValenbiciState } from 'src/apis/valenbici/types';
 import { VALENBICI_URL } from 'src/apis/valenbici/url';
@@ -8,10 +11,10 @@ import Loader from 'src/components/common/Loader';
 import Navbar from 'src/components/main/Navbar';
 import { historicDataReducer } from 'src/pages/Historic/historicDataReducer';
 import HistoricGuard from 'src/pages/Historic/HistoricGuard';
-import Home from 'src/pages/Home';
+import Home from 'src/pages/Home/Home';
 
 const Historic = lazy(() => import('src/pages/Historic/Historic'));
-const Finder = lazy(() => import('src/pages/Finder'));
+const Finder = lazy(() => import('src/pages/Finder/Finder'));
 const Heatmap = lazy(() => import('src/pages/Heatmap'));
 
 export function App() {
@@ -53,6 +56,9 @@ export function App() {
           });
         } catch (error) {
           console.error(error);
+          toast.error(
+            'Error while fetching the data. Check console for details.'
+          );
           setValenbici((prev) => ({
             stations: prev.stations,
             loading: false,
@@ -82,10 +88,12 @@ export function App() {
         flexDirection: 'column',
       }}
     >
+      <ToastContainer position="bottom-center" theme="colored" />
       <Navbar />
       <main
         css={{
           flexGrow: 1,
+          overflow: 'auto',
         }}
       >
         <Routes>
@@ -108,7 +116,7 @@ export function App() {
             }
           >
             <Route
-              path="/historic"
+              path="/history"
               element={
                 <Suspense fallback={<Loader />}>
                   <Historic
@@ -119,7 +127,12 @@ export function App() {
               }
             />
           </Route>
-          <Route path="/finder" element={<Finder />} />
+          <Route
+            path="/finder"
+            element={
+              <Finder valenbici={valenbici} getValenbici={handleGetValenbici} />
+            }
+          />
         </Routes>
       </main>
     </div>

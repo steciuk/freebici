@@ -15,11 +15,12 @@ const StationPopup = (props: { station: ValenbiciStation }) => {
           {((station.available / station.total) * 100).toFixed(2)}%{')'}
         </b>
       </div>
-      {!station.open && (
+      {/* TODO: analyze if 'open' field means the station doesn't work */}
+      {/* {!station.open && (
         <div>
           <b>Station closed</b>
         </div>
-      )}
+      )} */}
     </Popup>
   );
 };

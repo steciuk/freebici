@@ -12,6 +12,7 @@ const LeafletMap = (props: { children?: Children }) => {
       center={VALENCIA_CENTER}
       zoom={13}
       scrollWheelZoom={true}
+      doubleClickZoom={false}
       css={{
         width: '100%',
         height: '100%',

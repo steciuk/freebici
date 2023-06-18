@@ -1,6 +1,13 @@
 import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
+import { historicToStation } from 'src/apis/historic/historicToStation';
+import {
+  HistoricValenbiciData,
+  StaticValenbiciData,
+} from 'src/apis/historic/types';
+import { HISTORIC_URL, STATIC_URL } from 'src/apis/historic/url';
 import { ValenbiciStation } from 'src/apis/valenbici/types';
 import Loader from 'src/components/common/Loader';
 import LeafletMap from 'src/components/common/map/LeafletMap';
@@ -12,11 +19,6 @@ import {
   HistoricDataActionType,
   HistoricDataState,
 } from 'src/pages/Historic/historicDataReducer';
-import { historicToStation } from 'src/pages/Historic/historicToStation';
-import {
-  HistoricValenbiciData,
-  StaticValenbiciData,
-} from 'src/pages/Historic/types';
 
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
@@ -76,6 +78,13 @@ const Historic = ({
     const newDate = event.format('YYYY-MM-DD');
     const newTime = event.format('HH:mm');
 
+    if (newDate === 'Invalid date' || newTime === 'Invalid date') return;
+    if (newDate < EARLIEST.date) return;
+    if (newDate > LATEST.date) return;
+    if (newDate === EARLIEST.date && newTime < EARLIEST.time) return;
+    if (newDate === LATEST.date && newTime > LATEST.time) return;
+    if (!newTime.endsWith('00')) return;
+
     setDateTime({
       date: newDate,
       time: newTime,
@@ -104,17 +113,12 @@ const Historic = ({
 
   useEffect(() => {
     if (historicData.data !== null || historicData.loading) return;
-    console.log('fetching data');
 
     const fetchData = async () => {
       try {
         const response = await Promise.all([
-          axios.get<StaticValenbiciData>(
-            'https://steciuk.github.io/freebici/valenbici_static.json'
-          ),
-          axios.get<HistoricValenbiciData>(
-            'https://steciuk.github.io/freebici/valenbici_historic.json'
-          ),
+          axios.get<StaticValenbiciData>(STATIC_URL),
+          axios.get<HistoricValenbiciData>(HISTORIC_URL),
         ]);
 
         dispatchHistoricData({
@@ -126,6 +130,9 @@ const Historic = ({
         });
       } catch (errors) {
         console.error(errors);
+        toast.error(
+          'Error while fetching the data. Check console for details.'
+        );
         dispatchHistoricData({
           type: HistoricDataActionType.ERROR,
           payload: {
@@ -184,6 +191,9 @@ const Historic = ({
           format="DD/MM/YYYY HH:mm"
           ampm={false}
           views={['year', 'month', 'day', 'hours']}
+          shouldDisableTime={(value, view) =>
+            view === 'minutes' && value.minute() !== 0
+          }
         />
         <Button
           css={{
