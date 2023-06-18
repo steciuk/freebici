@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function useFetch<T>(
   url: string,
@@ -17,6 +18,10 @@ export default function useFetch<T>(
         const res = await axios.get<T>(url, options);
         setResponse({ data: res.data, error: null, loading: false });
       } catch (error) {
+        console.error(error);
+        toast.error(
+          'Error while fetching the data. Check console for details.'
+        );
         setResponse({ data: null, error, loading: false });
       }
     };

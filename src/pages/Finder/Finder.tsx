@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { Rectangle } from 'react-leaflet';
+import { toast } from 'react-toastify';
 import { resultToAddress } from 'src/apis/nominatim/resultToAddress';
 import { NominatimAddress, NominatimResponse } from 'src/apis/nominatim/types';
 import { getNominatimUrl } from 'src/apis/nominatim/url';
@@ -15,7 +16,6 @@ import {
   findStationInBetweenAndUnavailable,
   getClosestStationsAndUnavailable,
 } from 'src/pages/Finder/distancesFunctions';
-import FinderPopup from 'src/pages/Finder/FinderPopup';
 import Legend from 'src/pages/Finder/Legend';
 import MapRouting, { Waypoints } from 'src/pages/Finder/MapRouting';
 
@@ -82,17 +82,17 @@ const Finder = (props: {
 
         const [originResult, destinationResult] = response.map((r) => r.data);
         if (originResult.length === 0 && destinationResult.length === 0)
-          return window.alert('Origin and destination not found');
+          return toast.warn('Origin and destination not found');
         else if (originResult.length === 0)
-          return window.alert('Origin not found');
+          return toast.warn('Origin not found');
         else if (destinationResult.length === 0)
-          return window.alert('Destination not found');
+          return toast.warn('Destination not found');
 
         const firstOriginResult = resultToAddress(originResult[0]);
         const firstDestinationResult = resultToAddress(destinationResult[0]);
 
         if (firstOriginResult.osm_id === firstDestinationResult.osm_id)
-          return window.alert('Origin and destination are the same');
+          return toast.warn('Origin and destination are the same');
 
         if (
           firstOriginResult.position[0] < VALENCIA_BOUNDING_BOX.lat[0] ||
@@ -104,7 +104,7 @@ const Finder = (props: {
           firstDestinationResult.position[1] < VALENCIA_BOUNDING_BOX.lon[0] ||
           firstDestinationResult.position[1] > VALENCIA_BOUNDING_BOX.lon[1]
         )
-          return window.alert('Origin or destination are outside of Valencia');
+          return toast.warn('Origin or destination are outside of Valencia');
 
         const waypoints = computeWaypoints(
           firstOriginResult,
@@ -118,6 +118,9 @@ const Finder = (props: {
         toggleRouteLoading(false);
       } catch (error) {
         console.error(error);
+        toast.error(
+          'Error while fetching the data. Check console for details.'
+        );
       } finally {
         toggleRouteLoading(false);
       }

@@ -1,6 +1,9 @@
+import 'react-toastify/dist/ReactToastify.css';
+
 import axios from 'axios';
 import { lazy, Suspense, useCallback, useReducer, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 import { recordToStation } from 'src/apis/valenbici/convertRecordToStation';
 import { ValenbiciResponse, ValenbiciState } from 'src/apis/valenbici/types';
 import { VALENBICI_URL } from 'src/apis/valenbici/url';
@@ -53,6 +56,9 @@ export function App() {
           });
         } catch (error) {
           console.error(error);
+          toast.error(
+            'Error while fetching the data. Check console for details.'
+          );
           setValenbici((prev) => ({
             stations: prev.stations,
             loading: false,
@@ -82,6 +88,7 @@ export function App() {
         flexDirection: 'column',
       }}
     >
+      <ToastContainer position="bottom-center" theme="colored" />
       <Navbar />
       <main
         css={{

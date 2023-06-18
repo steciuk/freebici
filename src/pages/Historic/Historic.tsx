@@ -1,6 +1,7 @@
 import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 import { historicToStation } from 'src/apis/historic/historicToStation';
 import {
   HistoricValenbiciData,
@@ -129,6 +130,9 @@ const Historic = ({
         });
       } catch (errors) {
         console.error(errors);
+        toast.error(
+          'Error while fetching the data. Check console for details.'
+        );
         dispatchHistoricData({
           type: HistoricDataActionType.ERROR,
           payload: {

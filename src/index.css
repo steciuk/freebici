@@ -15,7 +15,7 @@ html {
   padding: 0;
 }
 
-a {
+a:not(.generic-link) {
   text-decoration: none;
   color: inherit;
 }

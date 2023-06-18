@@ -72,12 +72,12 @@ const Home = () => {
               <li>
                 <h4>Data Visualization</h4>
                 Visualize historical bike availability data through
-                easy-to-understand charts and graphs.
+                easy-to-understand visualization.
               </li>
               <li>
                 <h4>Interactive Animation</h4>
                 Take a journey through time with our animated playback feature,
-                which showcases changes in bike availability over your selected
+                which showcases changes in bike availability over the available
                 period.
               </li>
               <li>
@@ -102,8 +102,8 @@ const Home = () => {
             <ul>
               <li>
                 <h4>Efficient Pathfinding</h4>
-                Enter your origin and destination, and our smart algorithm will
-                find the most efficient route for your bike ride.
+                Enter your origin and destination, and find the most efficient
+                route for your bike ride.
               </li>
               <li>
                 <h4>Optimal Connection Stations</h4>
@@ -114,7 +114,7 @@ const Home = () => {
               <li>
                 <h4>Time and Cost Savings</h4>
                 Maximize your biking efficiency, save money, and enjoy
-                uninterrupted rides by leveraging our intelligent route
+                uninterrupted rides by leveraging OpenStreetMap route
                 optimization capabilities.
               </li>
             </ul>
@@ -127,7 +127,11 @@ const Home = () => {
         <footer className="home-footer">
           <p>
             Please note that FreeBici is a non-profit project developed solely
-            for educational purposes as part of a university course.
+            for educational purposes as part of a university course. FreeBici is
+            provided "as is" without any warranty. While efforts have been made
+            to ensure the accuracy and reliability of the information and
+            services provided, we cannot guarantee their completeness or
+            suitability for any purpose.
           </p>
           <div>
             <h5>Valenbisi disclaimer</h5>
@@ -169,10 +173,98 @@ const Home = () => {
                 FreeBici is not intended to replicate or replace any actual
                 services provided by Valenbisi or any other bike rental service.
               </li>
+              <li>
+                FreeBici does not store any personally identifiable information,
+                user or Valenbisi data. It operates as a client-side
+                application, utilizing Valenbisi API for real-time data
+                retrieval and processing during runtime. No data is persisted
+                beyond the scope of the user's current session.
+              </li>
             </ul>
           </div>
           <div>
-            <h5>OSMR</h5>
+            <h5>OpenStreetMap disclaimer</h5>
+            <ul>
+              <li>
+                Mapping data used by FreeBici comes from{' '}
+                <a
+                  className="generic-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://www.openstreetmap.org/copyright"
+                >
+                  OpenStreetMap
+                </a>
+                .
+              </li>
+              <li>
+                Mapping data used by FreeBici is made available under the{' '}
+                <a
+                  className="generic-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="http://opendatacommons.org/licenses/odbl/1.0/"
+                >
+                  Open Database License
+                </a>
+                . Any rights in individual contents of the data used are
+                licensed under the{' '}
+                <a
+                  className="generic-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="http://opendatacommons.org/licenses/dbcl/1.0/"
+                >
+                  Database Contents License
+                </a>
+                .
+              </li>
+              <li>
+                FreeBici uses the{' '}
+                <a
+                  className="generic-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://operations.osmfoundation.org/policies/nominatim/"
+                >
+                  OSM's Nominatim API
+                </a>{' '}
+                for geocoding purposes.
+              </li>
+              <li>
+                FreeBici does not store any personally identifiable information,
+                user or OpenStreetMap data. It operates as a client-side
+                application, utilizing OpenStreetMap APIs for real-time data
+                retrieval and processing during runtime. No data is persisted
+                beyond the scope of the user's current session.
+              </li>
+              <li>
+                To keep the FreeBici service up and running, please use the
+                service responsibly, avoid overusing the service in order to
+                prevent it from being blocked by OpenStreetMap.
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h5>Historic Valenbisi data disclaimer</h5>
+            <ul>
+              <li>
+                Historic Valenbisi data used by FreeBici comes from{' '}
+                <a
+                  className="generic-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://github.com/ceferra/valenbici"
+                >
+                  ceferra/valenbici
+                </a>{' '}
+                github repository.
+              </li>
+              <li>
+                FreeBici is not affiliated with, endorsed by or associated with
+                the owner of the repository.
+              </li>
+            </ul>
           </div>
         </footer>
       </div>
