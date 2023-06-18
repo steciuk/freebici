@@ -33,8 +33,9 @@ const Voronoi = (props: {
     const stationsWithColors: ValenbiciStationWithColor[] = [];
 
     props.stations.forEach((station) => {
-      if (!station.open)
-        return stationsWithColors.push({ ...station, color: 'black' });
+      // TODO: analyze if 'open' field means the station doesn't work
+      // if (!station.open)
+      //   return stationsWithColors.push({ ...station, color: 'black' });
 
       const value = station.available / station.total;
       const color = mapValueToColor(props.invertColors ? 1 - value : value);

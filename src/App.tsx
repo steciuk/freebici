@@ -86,6 +86,7 @@ export function App() {
       <main
         css={{
           flexGrow: 1,
+          overflow: 'auto',
         }}
       >
         <Routes>
@@ -108,7 +109,7 @@ export function App() {
             }
           >
             <Route
-              path="/historic"
+              path="/history"
               element={
                 <Suspense fallback={<Loader />}>
                   <Historic

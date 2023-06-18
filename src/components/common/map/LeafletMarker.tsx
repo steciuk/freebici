@@ -1,10 +1,10 @@
 import { Icon } from 'leaflet';
 import React, { memo, useEffect, useRef } from 'react';
 import { Marker } from 'react-leaflet';
-import blueMarkerIconPng from 'src/assets/marker-icon-blue.png';
-import grayMarkerIconPng from 'src/assets/marker-icon-gray.png';
-import greenMarkerIconPng from 'src/assets/marker-icon-green.png';
-import redMarkerIconPng from 'src/assets/marker-icon-red.png';
+import blueMarkerIconPng from 'src/assets/markers/marker-icon-blue.png';
+import grayMarkerIconPng from 'src/assets/markers/marker-icon-gray.png';
+import greenMarkerIconPng from 'src/assets/markers/marker-icon-green.png';
+import redMarkerIconPng from 'src/assets/markers/marker-icon-red.png';
 import { Children } from 'src/utils/types/Children';
 
 const colors = ['blue', 'green', 'red', 'gray'] as const;

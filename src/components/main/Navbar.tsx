@@ -8,7 +8,7 @@ import { Button } from '@mui/material';
 
 const PATHS: { path: string; name: string }[] = [
   { path: '/heatmap', name: 'Heatmap' },
-  { path: '/historic', name: 'Historic' },
+  { path: '/history', name: 'History' },
   { path: '/finder', name: 'Finder' },
 ];
 
@@ -23,6 +23,7 @@ const Navbar = () => {
         gridTemplateColumns: '8rem 1fr',
         backgroundColor: '#3f51b5',
         color: 'white',
+        flexShrink: 0,
       }}
     >
       <div
