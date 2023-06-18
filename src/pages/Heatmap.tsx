@@ -70,7 +70,11 @@ const Heatmap = (props: {
         )}
         {showStations &&
           stationsFiltered.map((station) => (
-            <LeafletMarker key={station.id} position={station.position}>
+            <LeafletMarker
+              key={station.id}
+              position={station.position}
+              color="blue"
+            >
               <StationPopup station={station} />
             </LeafletMarker>
           ))}

@@ -7,17 +7,17 @@ import { getNominatimUrl } from 'src/apis/nominatim/url';
 import { ValenbiciState, ValenbiciStation } from 'src/apis/valenbici/types';
 import Loader from 'src/components/common/Loader';
 import LeafletMap from 'src/components/common/map/LeafletMap';
-import LeafletMarker from 'src/components/common/map/LeafletMarker';
-import RoutingMachine from 'src/components/common/map/RoutingMachine';
-import StationPopup from 'src/components/common/map/StationPopup';
 import Sidebar from 'src/components/common/Sidebar';
 import useToggle from 'src/hooks/util/useToggle';
 import {
+  CommuteType,
   computeCyclingTime,
-  findClosestStation,
-  findStationInBetween,
+  findStationInBetweenAndUnavailable,
+  getClosestStationsAndUnavailable,
 } from 'src/pages/Finder/distancesFunctions';
 import FinderPopup from 'src/pages/Finder/FinderPopup';
+import Legend from 'src/pages/Finder/Legend';
+import MapRouting, { Waypoints } from 'src/pages/Finder/MapRouting';
 
 import ClearIcon from '@mui/icons-material/Clear';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
@@ -30,12 +30,6 @@ const VALENCIA_BOUNDING_BOX = {
 };
 
 const CYCLING_TIME_LIMIT = 30; // min
-
-type Waypoints = {
-  walkingFromOrigin: [[number, number], [number, number]] | null;
-  walkingToDestination: [[number, number], [number, number]] | null;
-  cycling: ValenbiciStation[] | null;
-};
 
 const Finder = (props: {
   valenbici: ValenbiciState;
@@ -55,6 +49,7 @@ const Finder = (props: {
     walkingFromOrigin: null,
     walkingToDestination: null,
     cycling: null,
+    unavailableStations: null,
   });
   const [routeLoading, toggleRouteLoading] = useToggle(false);
   const [showBoundingBox, toggleShowBoundingBox] = useToggle(false);
@@ -170,44 +165,11 @@ const Finder = (props: {
           />
         )}
         {originResult && destinationResult && (
-          <>
-            <LeafletMarker position={originResult.position} color="green">
-              <FinderPopup name={originResult.display_name} type="origin" />
-            </LeafletMarker>
-            <LeafletMarker position={destinationResult.position} color="red">
-              <FinderPopup
-                name={destinationResult.display_name}
-                type="destination"
-              />
-            </LeafletMarker>
-            {waypoints.walkingFromOrigin && (
-              <RoutingMachine
-                waypoints={waypoints.walkingFromOrigin}
-                mode="walking"
-              />
-            )}
-            {waypoints.walkingToDestination && (
-              <RoutingMachine
-                waypoints={waypoints.walkingToDestination}
-                mode="walking"
-              />
-            )}
-            {waypoints.cycling && (
-              <>
-                <RoutingMachine
-                  waypoints={waypoints.cycling.map(
-                    (station) => station.position
-                  )}
-                  mode="bicycling"
-                />
-                {waypoints.cycling.map((station) => (
-                  <LeafletMarker key={station.id} position={station.position}>
-                    <StationPopup station={station} />
-                  </LeafletMarker>
-                ))}
-              </>
-            )}
-          </>
+          <MapRouting
+            origin={originResult}
+            destination={destinationResult}
+            waypoints={waypoints}
+          />
         )}
       </LeafletMap>
 
@@ -276,6 +238,7 @@ const Finder = (props: {
           label="Show supported area"
         />
       </Sidebar>
+      <Legend />
     </div>
   );
 };
@@ -285,25 +248,47 @@ function computeWaypoints(
   destination: NominatimAddress,
   stations: ValenbiciStation[]
 ): Waypoints {
-  if (!origin || !destination)
+  if (!origin || !destination) {
     return {
       walkingFromOrigin: null,
       walkingToDestination: null,
       cycling: null,
+      unavailableStations: null,
     };
+  }
 
-  const closestOriginStation = findClosestStation(origin.position, stations);
+  const unavailableStations: ValenbiciStation[] = [];
+  const [closestOriginStation, unavailableOriginStations] =
+    getClosestStationsAndUnavailable(
+      origin.position,
+      stations,
+      CommuteType.OUT
+    );
+  unavailableStations.push(...unavailableOriginStations);
 
-  const closestDestinationStation = findClosestStation(
-    destination.position,
-    stations
-  );
+  const [closestDestinationStation, unavailableDestinationStations] =
+    getClosestStationsAndUnavailable(
+      destination.position,
+      stations,
+      CommuteType.IN
+    );
+  unavailableStations.push(...unavailableDestinationStations);
+
+  if (closestOriginStation === null || closestDestinationStation === null) {
+    return {
+      walkingFromOrigin: [origin.position, destination.position],
+      walkingToDestination: null,
+      cycling: null,
+      unavailableStations,
+    };
+  }
 
   if (closestDestinationStation.id === closestOriginStation.id) {
     return {
       walkingFromOrigin: [origin.position, destination.position],
       walkingToDestination: null,
       cycling: null,
+      unavailableStations,
     };
   }
 
@@ -328,8 +313,13 @@ function computeWaypoints(
       const cyclingTime = computeCyclingTime(hop1.position, hop2.position);
 
       if (cyclingTime > CYCLING_TIME_LIMIT) {
-        const newHop = findStationInBetween(hop1, hop2, stations);
+        const [newHop, unavailable] = findStationInBetweenAndUnavailable(
+          hop1,
+          hop2,
+          stations
+        );
         newHops.push(hop1, newHop);
+        unavailableStations.push(...unavailable);
         hopsChanged = true;
       } else {
         newHops.push(hop1);
@@ -352,6 +342,7 @@ function computeWaypoints(
       destination.position,
     ],
     cycling: cyclingHops,
+    unavailableStations,
   };
 }
 

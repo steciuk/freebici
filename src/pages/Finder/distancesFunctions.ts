@@ -3,7 +3,107 @@ import { ValenbiciStation } from 'src/apis/valenbici/types';
 const AVERAGE_CYCLING_SPEED = 140; // m/min
 const EARTH_RADIUS = 6_371_000; // m
 
-export function findClosestStation(
+export enum CommuteType {
+  IN,
+  OUT,
+  BOTH,
+}
+
+export function getClosestStations(
+  point: [number, number], // [lat, lon]
+  stations: ValenbiciStation[]
+): ValenbiciStation[] {
+  const stationsWithDistance = stations.map((station) => ({
+    station,
+    distance: distance(point, station.position),
+  }));
+
+  stationsWithDistance.sort((a, b) => a.distance - b.distance);
+
+  return stationsWithDistance.map(
+    (stationWithDistance) => stationWithDistance.station
+  );
+}
+
+export function computeCyclingTime(
+  point1: [number, number], // [lat, lon]
+  point2: [number, number] // [lat, lon]
+): number {
+  const distance = getMetersDistanceFromCoordinates(point1, point2);
+  return distance / AVERAGE_CYCLING_SPEED; // min
+}
+
+export function findStationInBetweenAndUnavailable(
+  station1: ValenbiciStation,
+  station2: ValenbiciStation,
+  stations: ValenbiciStation[]
+): [closest: ValenbiciStation | null, unavailable: ValenbiciStation[]] {
+  const lat = (station1.position[0] + station2.position[0]) / 2;
+  const lon = (station1.position[1] + station2.position[1]) / 2;
+
+  const [midStation, unavailable] = getClosestStationsAndUnavailable(
+    [lat, lon],
+    stations,
+    CommuteType.BOTH
+  );
+
+  if (midStation === null) return [null, unavailable];
+
+  // TODO: Maybe it would be better to reroute further than to skip a necessary hop
+  if (midStation.id === station1.id || midStation.id === station2.id)
+    return [null, unavailable];
+
+  return [midStation, unavailable];
+}
+
+export function getClosestStationsAndUnavailable(
+  position: [number, number],
+  stations: ValenbiciStation[],
+  commuteType: CommuteType
+): [closest: ValenbiciStation | null, unavailable: ValenbiciStation[]] {
+  const closestStations = getClosestStations(position, stations);
+  let closesStation: ValenbiciStation | null = null;
+  const unavailableStations: ValenbiciStation[] = [];
+
+  switch (commuteType) {
+    case CommuteType.IN:
+      closestStations.some((station) => {
+        if (station.available < station.total) {
+          closesStation = station;
+          return true;
+        }
+        unavailableStations.push(station);
+        return false;
+      });
+      break;
+    case CommuteType.OUT:
+      closestStations.some((station) => {
+        if (station.available > 0) {
+          closesStation = station;
+          return true;
+        }
+        unavailableStations.push(station);
+        return false;
+      });
+      break;
+    case CommuteType.BOTH:
+      closestStations.some((station) => {
+        if (station.available > 0 && station.available < station.total) {
+          closesStation = station;
+          return true;
+        }
+        unavailableStations.push(station);
+        return false;
+      });
+      break;
+    default:
+      throw new Error('Invalid commute type');
+  }
+
+  return [closesStation, unavailableStations];
+}
+
+function getClosestStation(
   point: [number, number], // [lat, lon]
   stations: ValenbiciStation[]
 ): ValenbiciStation {
@@ -20,30 +120,6 @@ export function findClosestStation(
   }
 
   return closestStation;
-}
-
-export function computeCyclingTime(
-  point1: [number, number], // [lat, lon]
-  point2: [number, number] // [lat, lon]
-): number {
-  const distance = getMetersDistanceFromCoordinates(point1, point2);
-  return distance / AVERAGE_CYCLING_SPEED; // min
-}
-
-export function findStationInBetween(
-  station1: ValenbiciStation,
-  station2: ValenbiciStation,
-  stations: ValenbiciStation[]
-): ValenbiciStation | null {
-  const lat = (station1.position[0] + station2.position[0]) / 2;
-  const lon = (station1.position[1] + station2.position[1]) / 2;
-
-  const midStation = findClosestStation([lat, lon], stations);
-
-  if (midStation.id === station1.id || midStation.id === station2.id)
-    return null;
-
-  return midStation;
 }
 
 function distance(point1: [number, number], point2: [number, number]): number {

@@ -107,7 +107,7 @@ const Navbar = () => {
                 bottom: 0,
                 right: 0,
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                zIndex: 1001,
+                zIndex: 1002,
               }}
               onClick={() => toggleNavbarOpened()}
             />
@@ -121,7 +121,7 @@ const Navbar = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '0.5rem',
-                zIndex: 1001,
+                zIndex: 1002,
               }}
             >
               {PATHS.map((path) => (

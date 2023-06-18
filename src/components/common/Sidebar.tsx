@@ -19,7 +19,7 @@ const Sidebar = (props: { children?: Children }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
-        zIndex: 1000,
+        zIndex: 1001,
         backgroundColor: 'white', // TODO: change to theme
         padding: '1rem 2rem',
         transition: 'right 0.5s',

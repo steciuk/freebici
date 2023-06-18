@@ -2,13 +2,23 @@ import { Icon } from 'leaflet';
 import React, { memo, useEffect, useRef } from 'react';
 import { Marker } from 'react-leaflet';
 import blueMarkerIconPng from 'src/assets/marker-icon-blue.png';
+import grayMarkerIconPng from 'src/assets/marker-icon-gray.png';
 import greenMarkerIconPng from 'src/assets/marker-icon-green.png';
 import redMarkerIconPng from 'src/assets/marker-icon-red.png';
 import { Children } from 'src/utils/types/Children';
 
+const colors = ['blue', 'green', 'red', 'gray'] as const;
+export type MarkerColorType = (typeof colors)[number];
+export const markerColorMap: { [key in MarkerColorType]: string } = {
+  blue: blueMarkerIconPng,
+  green: greenMarkerIconPng,
+  red: redMarkerIconPng,
+  gray: grayMarkerIconPng,
+};
+
 const LeafletMarker = (props: {
   position: [number, number];
-  color?: 'blue' | 'green' | 'red';
+  color: MarkerColorType;
   children?: Children;
   popupOpened?: boolean;
 }) => {
@@ -21,9 +31,7 @@ const LeafletMarker = (props: {
     }
   }, [markerRef, props.popupOpened]);
 
-  let iconUrl = blueMarkerIconPng;
-  if (props.color === 'green') iconUrl = greenMarkerIconPng;
-  else if (props.color === 'red') iconUrl = redMarkerIconPng;
+  const iconUrl = markerColorMap[props.color];
 
   return (
     <Marker

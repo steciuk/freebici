@@ -80,7 +80,7 @@ const Voronoi = (props: {
           }}
         >
           {selectedStation === station.id && (
-            <LeafletMarker position={station.position} popupOpened>
+            <LeafletMarker position={station.position} color="blue" popupOpened>
               <StationPopup station={station} />
             </LeafletMarker>
           )}

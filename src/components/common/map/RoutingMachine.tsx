@@ -7,6 +7,15 @@ import React, { memo } from 'react';
 import { createControlComponent } from '@react-leaflet/core';
 
 export type RoutingModes = 'bicycling' | 'walking';
+export const CYCLING_STYLES = {
+  color: '#00aaff',
+  opacity: 0.8,
+  weight: 8,
+};
+export const WALKING_STYLES = {
+  ...CYCLING_STYLES,
+  color: '#ff0000',
+};
 
 const createRoutingMachine = (props: {
   waypoints: [number, number][];
@@ -44,11 +53,7 @@ const RoutingMachine = memo(
 );
 
 export function getRoutingLineStyles(mode: RoutingModes) {
-  return {
-    color: mode === 'bicycling' ? '#00aaff' : '#ff0000',
-    weight: 8,
-    opacity: 0.8,
-  };
+  return mode === 'bicycling' ? CYCLING_STYLES : WALKING_STYLES;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
