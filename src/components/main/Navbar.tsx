@@ -12,16 +12,18 @@ const PATHS: { path: string; name: string }[] = [
   { path: '/finder', name: 'Finder' },
 ];
 
+const navbarHeight = '3.5rem';
+
 const Navbar = () => {
   const [navbarOpened, toggleNavbarOpened] = useToggle(false);
 
   return (
     <div
       css={{
-        height: '3rem',
+        height: navbarHeight,
         display: 'grid',
         gridTemplateColumns: '8rem 1fr',
-        backgroundColor: '#3f51b5',
+        backgroundColor: 'hsl(230deg, 48%, 47%)',
         color: 'white',
         flexShrink: 0,
       }}
@@ -60,7 +62,8 @@ const Navbar = () => {
                 borderRadius: '0.2rem',
                 transition: 'background-color 0.2s',
                 '&:hover': {
-                  backgroundColor: '#219ebc',
+                  backgroundColor: 'hsl(230deg, 48%, 94%)',
+                  color: '#1a535c',
                 },
               }}
             >
@@ -103,7 +106,7 @@ const Navbar = () => {
               className="backdrop"
               css={{
                 position: 'fixed',
-                top: '3rem',
+                top: navbarHeight,
                 left: 0,
                 bottom: 0,
                 right: 0,
@@ -115,9 +118,9 @@ const Navbar = () => {
             <nav
               css={{
                 position: 'absolute',
-                top: '3rem',
+                top: navbarHeight,
                 right: 0,
-                backgroundColor: '#3f51b5',
+                backgroundColor: 'hsl(230deg, 48%, 47%)',
                 padding: '0.5rem',
                 display: 'flex',
                 flexDirection: 'column',
@@ -134,7 +137,8 @@ const Navbar = () => {
                       borderRadius: '0.2rem',
                       transition: 'background-color 0.2s',
                       '&:hover': {
-                        backgroundColor: '#219ebc',
+                        backgroundColor: 'hsl(230deg, 48%, 94%)',
+                        color: '#1a535c',
                       },
                     }}
                   >

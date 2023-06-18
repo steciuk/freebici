@@ -8,7 +8,7 @@ import Loader from 'src/components/common/Loader';
 import Navbar from 'src/components/main/Navbar';
 import { historicDataReducer } from 'src/pages/Historic/historicDataReducer';
 import HistoricGuard from 'src/pages/Historic/HistoricGuard';
-import Home from 'src/pages/Home';
+import Home from 'src/pages/Home/Home';
 
 const Historic = lazy(() => import('src/pages/Historic/Historic'));
 const Finder = lazy(() => import('src/pages/Finder/Finder'));
