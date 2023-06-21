@@ -13,6 +13,7 @@ import useToggle from 'src/hooks/util/useToggle';
 import {
   CommuteType,
   computeCyclingTime,
+  computeWalkingTime,
   findStationInBetweenAndUnavailable,
   getClosestStationsAndUnavailable,
 } from 'src/pages/Finder/distancesFunctions';
@@ -287,6 +288,31 @@ function computeWaypoints(
   }
 
   if (closestDestinationStation.id === closestOriginStation.id) {
+    return {
+      walkingFromOrigin: [origin.position, destination.position],
+      walkingToDestination: null,
+      cycling: null,
+      unavailableStations,
+    };
+  }
+
+  const timeWithCycling =
+    computeWalkingTime(origin.position, closestOriginStation.position) +
+    computeCyclingTime(
+      closestOriginStation.position,
+      closestDestinationStation.position
+    ) +
+    computeWalkingTime(
+      closestDestinationStation.position,
+      destination.position
+    );
+
+  const timeWithoutCycling = computeWalkingTime(
+    origin.position,
+    destination.position
+  );
+
+  if (timeWithoutCycling < timeWithCycling) {
     return {
       walkingFromOrigin: [origin.position, destination.position],
       walkingToDestination: null,
