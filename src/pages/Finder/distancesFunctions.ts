@@ -1,6 +1,7 @@
 import { ValenbiciStation } from 'src/apis/valenbici/types';
 
 const AVERAGE_CYCLING_SPEED = 140; // m/min
+const AVERAGE_WALKING_SPEED = 70; // m/min
 const EARTH_RADIUS = 6_371_000; // m
 
 export enum CommuteType {
@@ -31,6 +32,14 @@ export function computeCyclingTime(
 ): number {
   const distance = getMetersDistanceFromCoordinates(point1, point2);
   return distance / AVERAGE_CYCLING_SPEED; // min
+}
+
+export function computeWalkingTime(
+  point1: [number, number], // [lat, lon]
+  point2: [number, number] // [lat, lon]
+): number {
+  const distance = getMetersDistanceFromCoordinates(point1, point2);
+  return distance / AVERAGE_WALKING_SPEED; // min
 }
 
 export function findStationInBetweenAndUnavailable(
@@ -88,7 +97,7 @@ export function getClosestStationsAndUnavailable(
       break;
     case CommuteType.BOTH:
       closestStations.some((station) => {
-        if (station.available > 0 && station.available < station.total) {
+        if (station.available < station.total) {
           closesStation = station;
           return true;
         }

@@ -47,7 +47,7 @@ const Home = () => {
                 the current number of available bikes at each station.
               </li>
               <li>
-                <h4>Advanced Filtration</h4>
+                <h4>Filtering</h4>
                 Filter stations based on the number of available bikes, enabling
                 you to plan your route efficiently and avoid stations with low
                 availability.
