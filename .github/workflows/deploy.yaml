@@ -1,15 +1,13 @@
-name: Deploy
+name: Build and deploy
 on:
-  release:
-    types: [published]
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
 jobs:
   build-and-deploy:
-    concurrency:
-      group: ci-${{ github.ref }}
-      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
