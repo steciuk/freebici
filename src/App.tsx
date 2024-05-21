@@ -27,7 +27,7 @@ export function App() {
   const [navigatedToHistoric, setNavigatedToHistoric] =
     useState<boolean>(false);
 
-  const [historicValenbiciData, dispachHistoricValenbiciData] = useReducer(
+  const [historicValenbiciData, dispatchHistoricValenbiciData] = useReducer(
     historicDataReducer,
     {
       loading: false,
@@ -121,7 +121,7 @@ export function App() {
                 <Suspense fallback={<Loader />}>
                   <Historic
                     historicData={historicValenbiciData}
-                    dispatchHistoricData={dispachHistoricValenbiciData}
+                    dispatchHistoricData={dispatchHistoricValenbiciData}
                   />
                 </Suspense>
               }
