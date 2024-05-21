@@ -1,5 +1,5 @@
 const host = window.location.host;
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = import.meta.env.DEV;
 
 export const STATIC_URL =
   host + isDev
