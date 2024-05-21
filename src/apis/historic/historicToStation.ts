@@ -1,5 +1,8 @@
+import {
+  HistoricValenbiciStation,
+  StaticValenbiciData,
+} from 'src/apis/historic/types';
 import { ValenbiciStation } from 'src/apis/valenbici/types';
-import { HistoricValenbiciStation, StaticValenbiciData } from 'src/pages/Historic/types';
 
 export function historicToStation(
   historicStations: HistoricValenbiciStation[],
