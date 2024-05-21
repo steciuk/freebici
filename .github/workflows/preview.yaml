@@ -1,7 +1,8 @@
-name: Deploy
+name: Preview
 on:
-  release:
-    types: [published]
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -31,3 +32,5 @@ jobs:
         with:
           branch: gh-pages
           folder: dist
+          target-folder: preview
+          clean: false
